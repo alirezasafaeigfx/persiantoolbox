@@ -100,7 +100,7 @@ jobs:
         run: pnpm test:e2e:ci --shard=${{ matrix.shard }}/4
       - name: Upload E2E failure artifacts
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-chromium-shard-${{ matrix.shard }}
           path: |
@@ -157,7 +157,7 @@ jobs:
           exit "$AUDIT_EXIT"
       - name: Upload dependency audit diagnostics
         if: failure() && steps.production_audit.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: production-dependency-audit
           path: pnpm-audit.json
@@ -183,7 +183,7 @@ jobs:
           corepack prepare pnpm@9.15.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm deploy:readiness:summary
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: deployment-readiness-summary
