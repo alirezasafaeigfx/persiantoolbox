@@ -22,8 +22,9 @@ describe('mahr calculator legal/data correctness', () => {
   it('states the legally applicable previous-year formula', () => {
     render(<MahrCalculator />);
 
-    expect(
-      screen.getByText(/شاخص سال قبل از پرداخت.*شاخص سال وقوع عقد.*مبلغ مهریه/),
-    ).toBeInTheDocument();
+    const formulas = screen.getAllByText(
+      /شاخص سال قبل از پرداخت.*شاخص سال وقوع عقد.*مبلغ مهریه/,
+    );
+    expect(formulas.length).toBeGreaterThan(0);
   });
 });
