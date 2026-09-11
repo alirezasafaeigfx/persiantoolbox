@@ -88,4 +88,11 @@ describe('GSC metadata quick wins', () => {
     expect(article).toContain('# راهنمای خسارت تأخیر تأدیه چک و سفته؛ فرمول و نکات حقوقی');
     expect(article).toContain('[محاسبه تأخیر تأدیه رایگان](/tools/check-penalty)');
   });
+
+  it('redirects the indexed legacy OCR article URL to the current article URL', () => {
+    const nextConfig = fs.readFileSync(path.join(process.cwd(), 'next.config.mjs'), 'utf8');
+
+    expect(nextConfig).toContain("source: '/blog/2026-06-26-ocr-persian-guide'");
+    expect(nextConfig).toContain("destination: '/blog/2026-06-19-ocr-persian-guide'");
+  });
 });
