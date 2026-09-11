@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { describe, expect, it } from 'vitest';
 import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
@@ -67,4 +69,23 @@ describe('GSC metadata quick wins', () => {
       }
     });
   }
+
+  it('separates the late-payment guide informational intent from the calculator intent', () => {
+    const article = fs.readFileSync(
+      path.join(
+        process.cwd(),
+        'content/blog/2026-07-08-late-payment-damages-cheque-promissory-note-guide.md',
+      ),
+      'utf8',
+    );
+
+    expect(article).toContain(
+      "title: 'راهنمای خسارت تأخیر تأدیه چک و سفته | فرمول و نکات حقوقی'",
+    );
+    expect(article).toContain(
+      "description: 'راهنمای آموزشی خسارت تأخیر تأدیه چک و سفته؛ آشنایی با مبنا، فرمول عمومی، مثال‌ها و نکات حقوقی پیش از استفاده از ابزار محاسبه.'",
+    );
+    expect(article).toContain('# راهنمای خسارت تأخیر تأدیه چک و سفته؛ فرمول و نکات حقوقی');
+    expect(article).toContain('[محاسبه تأخیر تأدیه رایگان](/tools/check-penalty)');
+  });
 });
