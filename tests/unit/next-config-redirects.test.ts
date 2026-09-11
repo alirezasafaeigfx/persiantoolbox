@@ -36,7 +36,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('0');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(32);
+    expect(redirects).toHaveLength(33);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
@@ -182,7 +182,7 @@ describe('next config redirects', () => {
     const config = await loadNextConfig('1');
     const redirects = await config.redirects();
 
-    expect(redirects).toHaveLength(35);
+    expect(redirects).toHaveLength(36);
     expect(redirects).toEqual(
       expect.arrayContaining([
         {
