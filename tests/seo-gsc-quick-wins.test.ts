@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
+import { getToolWithMetadataOverride } from '@/lib/tool-metadata-overrides';
 
 type MetadataExpectation = {
-  path: string;
+  path:
+    | '/date-tools/date-difference'
+    | '/date-tools/age-calculator'
+    | '/tools/check-penalty'
+    | '/career-tools/work-certificate'
+    | '/validation-tools/national-id'
+    | '/tools/invoice-generator';
   title: string;
   descriptionTerms: string[];
   keywordTerms: string[];
@@ -50,7 +56,7 @@ const targets: MetadataExpectation[] = [
 describe('GSC metadata quick wins', () => {
   for (const target of targets) {
     it(`aligns ${target.path} with its proven Search Console intent`, () => {
-      const tool = getToolByPathOrThrow(target.path);
+      const tool = getToolWithMetadataOverride(target.path);
 
       expect(tool.title).toBe(target.title);
       for (const term of target.descriptionTerms) {
