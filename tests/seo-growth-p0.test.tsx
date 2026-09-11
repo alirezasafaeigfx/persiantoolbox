@@ -23,14 +23,27 @@ describe('GSC growth P0 SEO regressions', () => {
 
   it('publishes a logo on the SoftwareApplication publisher organization', () => {
     const tool = getToolByPathOrThrow('/tools/invoice-generator');
-    const graph = buildToolJsonLd(tool)['@graph'] as Array<Record<string, unknown>>;
-    const software = graph.find((node) => node['@type'] === 'SoftwareApplication') as
-      | Record<string, unknown>
-      | undefined;
-    const publisher = software?.['publisher'] as Record<string, unknown> | undefined;
+    const graph = buildToolJsonLd(tool)['@graph'];
 
-    expect(publisher?.['@type']).toBe('Organization');
-    expect(publisher?.['logo']).toBe('https://persiantoolbox.ir/logo.png');
+    expect(Array.isArray(graph)).toBe(true);
+    if (!Array.isArray(graph)) {
+      throw new Error('Expected tool JSON-LD @graph to be an array');
+    }
+
+    const software = graph.find(
+      (node): node is Record<string, unknown> =>
+        typeof node === 'object' && node !== null && node['@type'] === 'SoftwareApplication',
+    );
+    const publisher = software?.['publisher'];
+
+    expect(typeof publisher).toBe('object');
+    expect(publisher).not.toBeNull();
+    if (typeof publisher !== 'object' || publisher === null) {
+      throw new Error('Expected SoftwareApplication publisher to be an object');
+    }
+
+    expect(publisher['@type']).toBe('Organization');
+    expect(publisher['logo']).toBe('https://persiantoolbox.ir/logo.png');
   });
 
   it('renders one descriptive H1 on the national-id validator', () => {
