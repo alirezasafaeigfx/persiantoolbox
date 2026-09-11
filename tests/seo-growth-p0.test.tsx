@@ -11,6 +11,10 @@ import {
 } from '@/lib/blog';
 import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
 describe('GSC growth P0 SEO regressions', () => {
   it('keeps single-post blog tags out of the indexable tag set', () => {
     expect(MIN_INDEXABLE_TAG_POSTS).toBeGreaterThanOrEqual(2);
@@ -32,13 +36,12 @@ describe('GSC growth P0 SEO regressions', () => {
 
     const software = graph.find(
       (node): node is Record<string, unknown> =>
-        typeof node === 'object' && node !== null && node['@type'] === 'SoftwareApplication',
+        isRecord(node) && node['@type'] === 'SoftwareApplication',
     );
     const publisher = software?.['publisher'];
 
-    expect(typeof publisher).toBe('object');
-    expect(publisher).not.toBeNull();
-    if (typeof publisher !== 'object' || publisher === null) {
+    expect(isRecord(publisher)).toBe(true);
+    if (!isRecord(publisher)) {
       throw new Error('Expected SoftwareApplication publisher to be an object');
     }
 
