@@ -32,6 +32,18 @@ describe('mahr legal correctness', () => {
     expect(screen.getByRole('region', { name: 'نتیجه محاسبه مهریه' })).toBeInTheDocument();
   });
 
+  it('accepts Persian digits and decimal separator for manual official indices', async () => {
+    const user = userEvent.setup();
+    render(<MahrCalculator />);
+
+    await user.type(screen.getByLabelText('مبلغ مهریه وجه رایج (تومان)'), '۱٬۰۰۰٬۰۰۰');
+    await user.click(screen.getByLabelText('ورود دستی شاخص‌های رسمی'));
+    await user.type(screen.getByLabelText('شاخص سال وقوع عقد'), '۱۰۰');
+    await user.type(screen.getByLabelText('شاخص سال قبل از تأدیه'), '۲۰۳٫۱۵');
+
+    expect(screen.getByText('2.0315')).toBeInTheDocument();
+  });
+
   it('offers payment year 1391 when the prior-year 1390 index is available', () => {
     render(<MahrCalculator />);
 
