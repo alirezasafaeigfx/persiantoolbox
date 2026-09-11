@@ -9,15 +9,6 @@ function source(path: string): string {
   return readFileSync(join(process.cwd(), path), 'utf8');
 }
 
-function sourceBlock(text: string, start: string, end: string): string {
-  const startIndex = text.indexOf(start);
-  const endIndex = text.indexOf(end, startIndex + start.length);
-  if (startIndex < 0 || endIndex < 0) {
-    throw new Error(`Unable to find source block: ${start} -> ${end}`);
-  }
-  return text.slice(startIndex, endIndex);
-}
-
 describe('mahr legal correctness', () => {
   it('calculates monetary mahr using the annual index of the year before payment', async () => {
     const user = userEvent.setup();
@@ -46,15 +37,14 @@ describe('mahr legal correctness', () => {
     expect(component).toContain('lastUpdated="۱۴۰۱"');
   });
 
-  it('keeps tool metadata scoped to monetary mahr and the Article 1082 formula', () => {
-    const registry = source('lib/tools-registry.ts');
-    const mahrEntry = sourceBlock(registry, "id: 'mahr-calculator'", "id: 'profit-margin'");
+  it('keeps effective page metadata scoped to monetary mahr and the Article 1082 formula', () => {
+    const page = source('app/(tools)/tools/mahr-calculator/page.tsx');
 
-    expect(mahrEntry).toContain('محاسبه مهریه به نرخ روز رایگان');
-    expect(mahrEntry).toContain('مهریه وجه رایج');
-    expect(mahrEntry).toContain('شاخص سال قبل از تأدیه');
-    expect(mahrEntry).not.toContain('ماده ۲۲ قانون حمایت خانواده');
-    expect(mahrEntry).not.toContain('سال فعلی');
+    expect(page).toContain('محاسبه مهریه به نرخ روز رایگان');
+    expect(page).toContain('مهریه وجه رایج');
+    expect(page).toContain('شاخص سال قبل از تأدیه');
+    expect(page).not.toContain('ماده ۲۲ قانون حمایت خانواده');
+    expect(page).not.toContain('سال فعلی');
   });
 
   it('keeps the guide informational, accurate, and separate from coin-price calculation', () => {
