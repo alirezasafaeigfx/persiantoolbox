@@ -23,6 +23,22 @@ describe('mahr legal correctness', () => {
     expect(screen.getByText('2.0315')).toBeInTheDocument();
   });
 
+  it('accepts Persian digits and the Persian thousands separator for the mahr amount', async () => {
+    const user = userEvent.setup();
+    render(<MahrCalculator />);
+
+    await user.type(screen.getByLabelText('مبلغ مهریه وجه رایج (تومان)'), '۱٬۰۰۰٬۰۰۰');
+
+    expect(screen.getByRole('region', { name: 'نتیجه محاسبه مهریه' })).toBeInTheDocument();
+  });
+
+  it('offers payment year 1391 when the prior-year 1390 index is available', () => {
+    render(<MahrCalculator />);
+
+    const paymentYear = screen.getByLabelText('سال تأدیه') as HTMLSelectElement;
+    expect(Array.from(paymentYear.options, (option) => option.value)).toContain('1391');
+  });
+
   it('does not present unverified future CPI presets or coin-mahr behavior', () => {
     const component = source('components/features/finance/MahrCalculator.tsx');
 
