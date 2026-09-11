@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui';
 import FinancialTransparencyBox from '@/components/finance/FinancialTransparencyBox';
-import { formatMoneyFa } from '@/shared/utils';
+import { formatMoneyFa, parseLooseNumber } from '@/shared/utils';
 import ShareResult from '@/components/ui/ShareResult';
 
 type MahrResult = {
@@ -32,7 +32,7 @@ const CPI_INDEXES: Record<number, number> = {
 };
 
 const MARRIAGE_YEARS = Object.keys(CPI_INDEXES).map(Number);
-const PAYMENT_YEARS = MARRIAGE_YEARS.slice(1).map((year) => year + 1);
+const PAYMENT_YEARS = MARRIAGE_YEARS.map((year) => year + 1);
 
 function calculateMahr(
   mahrAmount: number,
@@ -78,7 +78,7 @@ export default function MahrCalculator() {
       ? (CPI_INDEXES[priorPaymentYear] ?? 0)
       : 0;
 
-  const mahrNum = useMemo(() => parseFloat(mahrAmount.replace(/,/g, '')) || 0, [mahrAmount]);
+  const mahrNum = useMemo(() => parseLooseNumber(mahrAmount), [mahrAmount]);
 
   const result = useMemo(
     () => calculateMahr(mahrNum, marriageIndex, priorPaymentYearIndex),
