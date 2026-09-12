@@ -9,13 +9,15 @@ const TARGET_DESCRIPTION =
   'متن فارسی و انگلیسی را از عکس و تصویر آنلاین استخراج کنید. OCR فارسی رایگان در مرورگر اجرا می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام.';
 
 const read = (file: string) => fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+const normalizeWhitespace = (value: string) => value.replace(/\s+/g, ' ');
 
 describe('Persian OCR GSC intent contract', () => {
   it('uses concise page-specific metadata while preserving the canonical route', () => {
     const page = read(PAGE_PATH);
+    const normalizedPage = normalizeWhitespace(page);
 
-    expect(page).toContain(`title: '${TARGET_TITLE}'`);
-    expect(page).toContain(`description: '${TARGET_DESCRIPTION}'`);
+    expect(normalizedPage).toContain(`title: '${TARGET_TITLE}'`);
+    expect(normalizedPage).toContain(`description: '${TARGET_DESCRIPTION}'`);
     expect(page).toContain("'استخراج متن از عکس آنلاین'");
     expect(page).toContain("'تبدیل عکس به متن'");
     expect(page).toContain('path: tool.path');
@@ -28,7 +30,9 @@ describe('Persian OCR GSC intent contract', () => {
     expect(ocr).toContain('<h1');
     expect(ocr).toContain('استخراج متن از عکس آنلاین با OCR فارسی');
     expect(ocr).toContain('بدون آپلود فایل');
-    expect(ocr).not.toContain('<h2 className="text-2xl font-bold text-[var(--text-primary)]">\n          استخراج متن از تصویر (OCR فارسی)\n        </h2>');
+    expect(ocr).not.toContain(
+      '<h2 className="text-2xl font-bold text-[var(--text-primary)]">\n          استخراج متن از تصویر (OCR فارسی)\n        </h2>',
+    );
   });
 
   it('keeps SERP metadata within the intended concise ranges', () => {
