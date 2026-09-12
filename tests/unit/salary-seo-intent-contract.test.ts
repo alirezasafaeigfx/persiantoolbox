@@ -9,16 +9,18 @@ const TARGET_DESCRIPTION =
   'حقوق ناخالص را به خالص و حقوق خالص را به ناخالص تبدیل کنید. محاسبه آنلاین حقوق ۱۴۰۵ با بیمه و مالیات، همراه با جزئیات کسورات و دریافتی.';
 
 const read = (file: string) => fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+const normalizeWhitespace = (value: string) => value.replace(/\s+/g, ' ');
 
 describe('salary gross/net GSC intent contract', () => {
   it('uses focused page metadata without changing the canonical salary route', () => {
     const page = read(PAGE_PATH);
+    const normalizedPage = normalizeWhitespace(page);
 
-    expect(page).toContain(`title: '${TARGET_TITLE}'`);
-    expect(page).toContain(`description: '${TARGET_DESCRIPTION}'`);
+    expect(normalizedPage).toContain(`title: '${TARGET_TITLE}'`);
+    expect(normalizedPage).toContain(`description: '${TARGET_DESCRIPTION}'`);
     expect(page).toContain("'تبدیل حقوق ناخالص به خالص'");
     expect(page).toContain("'تبدیل حقوق خالص به ناخالص'");
-    expect(page).toContain("path: tool.path");
+    expect(page).toContain('path: tool.path');
     expect(page).not.toContain('title: tool.title');
   });
 
