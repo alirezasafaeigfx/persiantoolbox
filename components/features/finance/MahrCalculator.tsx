@@ -13,8 +13,17 @@ type MahrResult = {
   increase: number;
 };
 
+function normalizeNumericInput(value: string): string {
+  return value
+    .replace(/[۰-۹]/g, (digit) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+    .replace(/[٠-٩]/g, (digit) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+    .replace(/[,\u066c]/g, '')
+    .replace(/\u066b/g, '.')
+    .trim();
+}
+
 function parseNumericInput(value: string): number {
-  const parsed = parseFloat(value.replace(/,/g, ''));
+  const parsed = parseFloat(normalizeNumericInput(value));
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
