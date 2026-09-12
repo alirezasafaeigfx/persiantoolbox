@@ -24,8 +24,9 @@ const componentSource = readFileSync(
 describe('postal code SEO and correctness contract', () => {
   it('targets the GSC intent with truthful page metadata while preserving the canonical route', () => {
     expect(pageSource).toContain("title: 'اعتبارسنجی کد پستی آنلاین رایگان | جعبه ابزار فارسی'");
+    expect(pageSource).toContain('description:');
     expect(pageSource).toContain(
-      "description: 'ساختار کد پستی ۱۰ رقمی ایران را آنلاین و رایگان بررسی کنید. اعتبارسنجی در مرورگر انجام می‌شود و جایگزین استعلام رسمی نشانی از شرکت پست نیست.'",
+      'ساختار کد پستی ۱۰ رقمی ایران را آنلاین و رایگان بررسی کنید. اعتبارسنجی در مرورگر انجام می‌شود و جایگزین استعلام رسمی نشانی از شرکت پست نیست.',
     );
     expect(pageSource).toContain("'اعتبار سنجی کد پستی'");
     expect(pageSource).toContain('path: tool.path');
