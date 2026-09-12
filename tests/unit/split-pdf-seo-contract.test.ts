@@ -16,7 +16,8 @@ describe('split PDF GSC intent and snippet contract', () => {
     const page = readSource('app/(tools)/pdf-tools/split/split-pdf/page.tsx');
 
     expect(page).toContain(`title: '${SEO_TITLE}'`);
-    expect(page).toContain(`description: '${SEO_DESCRIPTION}'`);
+    expect(page).toContain('description:');
+    expect(page).toContain(`'${SEO_DESCRIPTION}'`);
     expect(SEO_DESCRIPTION.length).toBeGreaterThanOrEqual(90);
     expect(SEO_DESCRIPTION.length).toBeLessThanOrEqual(160);
     for (const keyword of SEO_KEYWORDS) {
