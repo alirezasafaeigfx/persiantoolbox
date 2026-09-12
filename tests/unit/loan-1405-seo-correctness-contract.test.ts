@@ -3,7 +3,8 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 const ARTICLE_PATH = 'content/blog/2026-06-24-loan-1405-guide.md';
-const TARGET_TITLE = 'جدول اقساط وام مسکن ملی ۱۴۰۵ | سقف ۸۵۰ میلیون و شرایط';
+const TARGET_TITLE = 'جدول اقساط وام مسکن ملی ۱۴۰۵ | سقف ۸۵۰ میلیون';
+const RENDERED_TITLE = `${TARGET_TITLE} - جعبه ابزار فارسی`;
 const TARGET_DESCRIPTION =
   'جدول نمونه اقساط وام مسکن ملی ۱۴۰۵ با سقف ۸۵۰ میلیون تومان برای پروژه‌های مشمول، شرایط دریافت و روش محاسبه قسط. مبلغ واقعی طبق قرارداد بانکی است.';
 
@@ -14,6 +15,7 @@ describe('loan 1405 GSC intent and financial-content correctness contract', () =
     const article = readArticle();
 
     expect(article).toContain(`title: '${TARGET_TITLE}'`);
+    expect(RENDERED_TITLE.length).toBeLessThanOrEqual(65);
     expect(article).toContain(`description: '${TARGET_DESCRIPTION}'`);
     expect(TARGET_DESCRIPTION.length).toBeGreaterThanOrEqual(90);
     expect(TARGET_DESCRIPTION.length).toBeLessThanOrEqual(160);
