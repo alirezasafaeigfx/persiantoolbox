@@ -1,31 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { getToolByPathOrThrow } from '@/lib/tools-registry';
 
 const ROUTE = '/pdf-tools/split/split-pdf';
+const SEO_TITLE = 'تقسیم فایل PDF آنلاین رایگان | جعبه ابزار فارسی';
+const SEO_DESCRIPTION =
+  'فایل PDF را آنلاین و رایگان بر اساس صفحات دلخواه تقسیم کنید. پردازش در مرورگر انجام می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام اجباری.';
+const SEO_KEYWORDS = ['تقسیم PDF', 'تقسیم فایل PDF', 'تقسیم PDF آنلاین', 'تقسیم فایل PDF آنلاین'];
 
 const readSource = (relativePath: string) =>
   fs.readFileSync(path.join(process.cwd(), relativePath), 'utf8');
 
 describe('split PDF GSC intent and snippet contract', () => {
-  it('aligns metadata with the ranking queries and keeps a useful SERP snippet', () => {
-    const tool = getToolByPathOrThrow(ROUTE);
+  it('aligns page metadata with the ranking queries and keeps a useful SERP snippet', () => {
+    const page = readSource('app/(tools)/pdf-tools/split/split-pdf/page.tsx');
 
-    expect(tool.title).toBe('تقسیم فایل PDF آنلاین رایگان | جعبه ابزار فارسی');
-    expect(tool.description).toBe(
-      'فایل PDF را آنلاین و رایگان بر اساس صفحات دلخواه تقسیم کنید. پردازش در مرورگر انجام می‌شود؛ بدون آپلود فایل به سرور و بدون ثبت‌نام اجباری.',
-    );
-    expect(tool.description.length).toBeGreaterThanOrEqual(90);
-    expect(tool.description.length).toBeLessThanOrEqual(160);
-    expect(tool.keywords).toEqual(
-      expect.arrayContaining([
-        'تقسیم PDF',
-        'تقسیم فایل PDF',
-        'تقسیم PDF آنلاین',
-        'تقسیم فایل PDF آنلاین',
-      ]),
-    );
+    expect(page).toContain(`title: '${SEO_TITLE}'`);
+    expect(page).toContain(`description: '${SEO_DESCRIPTION}'`);
+    expect(SEO_DESCRIPTION.length).toBeGreaterThanOrEqual(90);
+    expect(SEO_DESCRIPTION.length).toBeLessThanOrEqual(160);
+    for (const keyword of SEO_KEYWORDS) {
+      expect(page).toContain(`'${keyword}'`);
+    }
   });
 
   it('uses the exact GSC intent in the visible H1', () => {
@@ -34,10 +30,15 @@ describe('split PDF GSC intent and snippet contract', () => {
     expect(component).toContain('>تقسیم فایل PDF آنلاین</h1>');
   });
 
-  it('keeps the established canonical route unchanged', () => {
+  it('keeps the canonical route unchanged and describes the real single-file local workflow', () => {
     const page = readSource('app/(tools)/pdf-tools/split/split-pdf/page.tsx');
 
-    expect(page).toContain("getToolByPathOrThrow('/pdf-tools/split/split-pdf')");
+    expect(page).toContain(`getToolByPathOrThrow('${ROUTE}')`);
+    expect(page).toContain("path: tool.path");
     expect(page).not.toContain('permanentRedirect');
+    expect(page).not.toContain('تقسیم فایل PDF به چند فایل جداگانه');
+    expect(page).not.toContain('فایل‌های جدا شده را دانلود کنید');
+    expect(page).toContain('پردازش فایل در مرورگر انجام می‌شود');
+    expect(page).toContain('فایل PDF خروجی را دانلود کنید');
   });
 });
