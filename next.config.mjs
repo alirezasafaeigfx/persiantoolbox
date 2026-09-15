@@ -128,6 +128,11 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blog/2026-06-26-ocr-persian-guide',
+        destination: '/blog/2026-06-19-ocr-persian-guide',
+        permanent: true,
+      },
+      {
         source: '/pdf-tools/compress',
         destination: '/pdf-tools/compress/compress-pdf',
         permanent: true,
