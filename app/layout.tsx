@@ -110,7 +110,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         sameAs: [
           BRAND.ownerSiteUrl,
           'https://twitter.com/persiantoolbox',
-          'https://github.com/parsairaniiidev/persiantoolbox',
+          `https://github.com/${BRAND.repository.owner}/${BRAND.repository.name}`,
           'https://www.linkedin.com/company/persiantoolbox',
           'https://youtube.com/@persiantoolbox',
           'https://t.me/persiantoolbox',
@@ -126,6 +126,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           '@type': 'Organization',
           name: siteName,
           url: siteUrl,
+          logo: `${siteUrl}/logo.png`,
         },
         potentialAction: {
           '@type': 'SearchAction',
