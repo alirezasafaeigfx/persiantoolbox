@@ -12,10 +12,10 @@ const pkg = JSON.parse(
   fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'),
 ) as PackageJson;
 
-function numericVersion(value: string): number[] {
+function numericVersion(value: string): [number, number, number] {
   const match = value.match(/(\d+)\.(\d+)\.(\d+)/);
   if (!match) throw new Error(`No semver found in ${value}`);
-  return match.slice(1).map(Number);
+  return [Number(match[1]), Number(match[2]), Number(match[3])];
 }
 
 function expectAtLeast(value: string, floor: string) {
@@ -28,8 +28,8 @@ function expectAtLeast(value: string, floor: string) {
 
 describe('production dependency security floors', () => {
   it('keeps direct runtime packages above known advisory cutoffs', () => {
-    expectAtLeast(pkg.dependencies?.next ?? '', '16.3.3');
-    expectAtLeast(pkg.devDependencies?.sharp ?? '', '0.35.4');
+    expectAtLeast(pkg.dependencies?.['next'] ?? '', '16.3.3');
+    expectAtLeast(pkg.devDependencies?.['sharp'] ?? '', '0.35.4');
   });
 
   it('keeps security-sensitive transitive overrides patched', () => {
