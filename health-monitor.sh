@@ -7,6 +7,7 @@ LOG="/home/ubuntu/.pm2/logs/health-monitor.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 ALERT_FILE="/home/ubuntu/.pm2/logs/health-alerts.log"
 LOCK_FILE="/tmp/persiantoolbox-health-monitor.lock"
+LIVENESS_FAILURE_FILE="/tmp/persiantoolbox-health-liveness-failures"
 ISSUES=0
 
 exec 9>"$LOCK_FILE"
@@ -87,13 +88,30 @@ if [ -z "$HEALTH" ] || ! echo "$HEALTH" | grep -q '"status":"ok"'; then
   fi
 
   if [ -n "$LIVENESS" ] && echo "$LIVENESS" | grep -q '"service":"persiantoolbox"'; then
+    rm -f "$LIVENESS_FAILURE_FILE"
     log_warn "Health endpoint degraded but liveness probe succeeded — suppressing restart"
   else
-    log_alert "Health and liveness probes failed — restarting PM2"
-    pm2 restart "$PM2_PROCESS" 2>/dev/null
-    sleep 10
+    PREVIOUS_LIVENESS_FAILURES=0
+    if [ -f "$LIVENESS_FAILURE_FILE" ]; then
+      PREVIOUS_LIVENESS_FAILURES=$(cat "$LIVENESS_FAILURE_FILE" 2>/dev/null || echo "0")
+      case "$PREVIOUS_LIVENESS_FAILURES" in
+        ''|*[!0-9]*) PREVIOUS_LIVENESS_FAILURES=0 ;;
+      esac
+    fi
+    CONSECUTIVE_LIVENESS_FAILURES=$((PREVIOUS_LIVENESS_FAILURES + 1))
+    printf '%s\n' "$CONSECUTIVE_LIVENESS_FAILURES" > "$LIVENESS_FAILURE_FILE"
+
+    if [ "$CONSECUTIVE_LIVENESS_FAILURES" -lt 3 ]; then
+      log_warn "Liveness failure ${CONSECUTIVE_LIVENESS_FAILURES}/3 — deferring restart"
+    else
+      log_alert "Health and liveness probes failed for 3 consecutive monitor runs — restarting PM2"
+      rm -f "$LIVENESS_FAILURE_FILE"
+      pm2 restart "$PM2_PROCESS" 2>/dev/null
+      sleep 10
+    fi
   fi
 else
+  rm -f "$LIVENESS_FAILURE_FILE"
   VERSION=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('version','?'))" 2>/dev/null || echo "?")
   UPTIME_S=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('uptime',0))" 2>/dev/null || echo "0")
   log_ok "Health: v${VERSION}, uptime=${UPTIME_S}s"

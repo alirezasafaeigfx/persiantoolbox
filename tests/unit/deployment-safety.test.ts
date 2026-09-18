@@ -181,7 +181,16 @@ describe('production deployment safety contracts', () => {
     expect(healthSection).toContain(
       'Health endpoint degraded but liveness probe succeeded — suppressing restart',
     );
-    expect(healthSection).toContain('Health and liveness probes failed — restarting PM2');
+    expect(monitor).toContain('LIVENESS_FAILURE_FILE=');
+    expect(healthSection).toContain('CONSECUTIVE_LIVENESS_FAILURES');
+    expect(healthSection).toContain('"$CONSECUTIVE_LIVENESS_FAILURES" -lt 3');
+    expect(healthSection).toContain(
+      'Liveness failure ${CONSECUTIVE_LIVENESS_FAILURES}/3 — deferring restart',
+    );
+    expect(healthSection).toContain(
+      'Health and liveness probes failed for 3 consecutive monitor runs — restarting PM2',
+    );
+    expect(healthSection).toContain('rm -f "$LIVENESS_FAILURE_FILE"');
     expect(healthSection).not.toContain('Health endpoint failed twice — restarting PM2');
     expect(healthSection.indexOf('/api/version')).toBeLessThan(
       healthSection.indexOf('pm2 restart "$PM2_PROCESS"'),
