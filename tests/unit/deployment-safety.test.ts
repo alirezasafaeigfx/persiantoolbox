@@ -123,19 +123,23 @@ describe('production deployment safety contracts', () => {
     expect(verifier).toContain('s-maxage=');
   });
 
-  it('clears only the known inactive legacy process from the candidate port', () => {
+  it('clears only a known inactive PM2 slot or legacy process from the candidate port', () => {
     const manual = source('deploy-blue-green.sh');
     const deploy = source('ops/deploy/deploy-production-blue-green.sh');
 
     expect(deploy).toContain('LEGACY_PROCESS="persiantoolbox"');
     expect(deploy).toContain('"$CURRENT_PROCESS" != "$LEGACY_PROCESS"');
-    expect(deploy).toContain('legacy_process_pids "$LEGACY_PROCESS"');
+    expect(deploy).toContain('pm2_process_pids "$NEW_PROCESS"');
+    expect(deploy).toContain('pm2_process_pids "$LEGACY_PROCESS"');
     expect(deploy).toContain('candidate_port_pids "$NEW_PORT"');
     expect(deploy).toContain('sudo ss -H -ltnp');
+    expect(deploy).toContain('pm2 stop "$NEW_PROCESS"');
     expect(deploy).toContain('pm2 stop "$LEGACY_PROCESS"');
+    expect(deploy).toContain('stopping known inactive slot process on candidate port');
     expect(deploy).toContain('unexpected process owns candidate port');
     expect(deploy).toContain('candidate port remains occupied');
     expect(deploy).toContain('cannot inspect candidate port');
+    expect(deploy).not.toContain('pm2 delete "$NEW_PROCESS"');
     expect(deploy).not.toContain('pm2 delete "$LEGACY_PROCESS"');
     expect(manual).toContain('deploy-guard --check');
     expect(manual).not.toContain('deploy-guard --guard');
@@ -163,7 +167,7 @@ describe('production deployment safety contracts', () => {
     }
     expect(rollback).toContain('"3000" || "$PREVIOUS_PORT" == "3004"');
     expect(audit).toContain('^(3000|3004)$');
-    expect(workflow).toContain("[[ \"$ACTIVE_PORT\" == '3000' || \"$ACTIVE_PORT\" == '3004' ]]");
+    expect(workflow).toContain('[[ "$ACTIVE_PORT" == \'3000\' || "$ACTIVE_PORT" == \'3004\' ]]');
     expect(monitor).toContain('3004) echo "persiantoolbox-green"');
     expect(rehearsal).toContain('GREEN_PORT=3004');
     expect(history).toContain('"$ACTIVE_PORT" == "3004"');

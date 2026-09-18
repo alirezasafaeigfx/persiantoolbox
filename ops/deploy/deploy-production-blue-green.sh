@@ -350,7 +350,7 @@ on_error() {
 }
 trap on_error ERR INT TERM
 
-legacy_process_pids() {
+pm2_process_pids() {
   local process_name="$1"
   pm2 jlist | node -e '
     let input = "";
@@ -383,37 +383,48 @@ candidate_port_pids() {
     | sort -u
 }
 
+wait_for_candidate_port_to_clear() {
+  local stopped_process="$1"
+  local stopped_label="$2"
+  local remaining_pids_output=""
+  local -a remaining_pids=()
+
+  for attempt in $(seq 1 15); do
+    if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
+      echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
+      exit 1
+    fi
+    mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
+    (( ${#remaining_pids[@]} == 0 )) && return 0
+    sleep 1
+  done
+
+  echo "[production-deploy] candidate port remains occupied after stopping $stopped_label: $stopped_process" >&2
+  exit 1
+}
+
 if ! candidate_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
   echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
   exit 1
 fi
 mapfile -t candidate_pids < <(printf '%s' "$candidate_pids_output")
 if (( ${#candidate_pids[@]} > 0 )); then
-  mapfile -t legacy_pids < <(legacy_process_pids "$LEGACY_PROCESS")
-  if [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
+  mapfile -t inactive_slot_pids < <(pm2_process_pids "$NEW_PROCESS")
+  mapfile -t legacy_pids < <(pm2_process_pids "$LEGACY_PROCESS")
+
+  if (( ${#candidate_pids[@]} == 1 )) \
+    && (( ${#inactive_slot_pids[@]} == 1 )) \
+    && [[ "${candidate_pids[0]}" == "${inactive_slot_pids[0]}" ]]; then
+    echo "[production-deploy] stopping known inactive slot process on candidate port $NEW_PORT: $NEW_PROCESS"
+    pm2 stop "$NEW_PROCESS"
+    wait_for_candidate_port_to_clear "$NEW_PROCESS" "inactive slot process"
+  elif [[ "$CURRENT_PROCESS" != "$LEGACY_PROCESS" ]] \
     && (( ${#candidate_pids[@]} == 1 )) \
     && (( ${#legacy_pids[@]} == 1 )) \
     && [[ "${candidate_pids[0]}" == "${legacy_pids[0]}" ]]; then
     echo "[production-deploy] stopping inactive legacy process on candidate port $NEW_PORT"
     pm2 stop "$LEGACY_PROCESS"
-    for attempt in $(seq 1 15); do
-      if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
-        echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
-        exit 1
-      fi
-      mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
-      (( ${#remaining_pids[@]} == 0 )) && break
-      sleep 1
-    done
-    if ! remaining_pids_output="$(candidate_port_pids "$NEW_PORT")"; then
-      echo "[production-deploy] cannot inspect candidate port $NEW_PORT" >&2
-      exit 1
-    fi
-    mapfile -t remaining_pids < <(printf '%s' "$remaining_pids_output")
-    if (( ${#remaining_pids[@]} > 0 )); then
-      echo "[production-deploy] candidate port remains occupied after stopping legacy process" >&2
-      exit 1
-    fi
+    wait_for_candidate_port_to_clear "$LEGACY_PROCESS" "legacy process"
   else
     echo "[production-deploy] unexpected process owns candidate port $NEW_PORT; refusing to stop it" >&2
     exit 1
