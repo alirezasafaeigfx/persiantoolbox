@@ -97,7 +97,7 @@ Zero-downtime blue-green deployment:
 
 **Rollback:** Just switch nginx upstream back (<1s). No code changes needed.
 
-**Ports:** blue=3000, green=3004. Port 3001 = alirezasafaeisystems.ir. Port 3002 = audit.
+**Ports:** PersianToolbox blue=3000, staging=3001, green=3004. Port 3002 = my-portfolio production; port 3003 = my-portfolio staging and must not be reused by PersianToolbox.
 
 ### Legacy Deploy (`deploy-vps-auto.sh`)
 
