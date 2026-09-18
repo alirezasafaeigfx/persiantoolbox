@@ -6,7 +6,7 @@ This runbook applies only to the first migration from the July 2026 legacy produ
 
 ```text
 Active process: persiantoolbox-green
-Active port: 3004
+Active port: 3003
 Legacy release root: /home/ubuntu/persiantoolbox-releases
 Known current release SHA: cc4e6968dfcd8dc4b8fa930e701e192b9d83df1f
 Canonical base: /home/ubuntu/persiantoolbox-blue-green
