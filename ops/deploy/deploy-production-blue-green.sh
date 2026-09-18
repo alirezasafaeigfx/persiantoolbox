@@ -13,7 +13,7 @@ UPSTREAM_FILE="/etc/nginx/conf.d/persiantoolbox-upstream.conf"
 STATIC_STORE="/home/ubuntu/persiantoolbox-shared-assets"
 STATIC_SAFETY_MARKER="/etc/nginx/.persiantoolbox-static-safe"
 BLUE_PORT=3000
-GREEN_PORT=3003
+GREEN_PORT=3004
 
 usage() {
   cat <<USAGE
