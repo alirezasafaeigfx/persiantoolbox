@@ -79,9 +79,20 @@ if [ -z "$HEALTH" ] || ! echo "$HEALTH" | grep -q '"status":"ok"'; then
 fi
 
 if [ -z "$HEALTH" ] || ! echo "$HEALTH" | grep -q '"status":"ok"'; then
-  log_alert "Health endpoint failed twice — restarting PM2..."
-  pm2 restart "$PM2_PROCESS" 2>/dev/null
-  sleep 10
+  LIVENESS=$(curl -s --connect-timeout 3 --max-time 8 "http://127.0.0.1:$ACTIVE_PORT/api/version" 2>/dev/null)
+  if [ -z "$LIVENESS" ] || ! echo "$LIVENESS" | grep -q '"service":"persiantoolbox"'; then
+    log_warn "Liveness probe failed once — retrying before restart"
+    sleep 10
+    LIVENESS=$(curl -s --connect-timeout 3 --max-time 8 "http://127.0.0.1:$ACTIVE_PORT/api/version" 2>/dev/null)
+  fi
+
+  if [ -n "$LIVENESS" ] && echo "$LIVENESS" | grep -q '"service":"persiantoolbox"'; then
+    log_warn "Health endpoint degraded but liveness probe succeeded — suppressing restart"
+  else
+    log_alert "Health and liveness probes failed — restarting PM2"
+    pm2 restart "$PM2_PROCESS" 2>/dev/null
+    sleep 10
+  fi
 else
   VERSION=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('version','?'))" 2>/dev/null || echo "?")
   UPTIME_S=$(echo "$HEALTH" | python3 -c "import sys,json; print(json.load(sys.stdin).get('uptime',0))" 2>/dev/null || echo "0")
