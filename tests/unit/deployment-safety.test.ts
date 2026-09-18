@@ -163,10 +163,29 @@ describe('production deployment safety contracts', () => {
     }
     expect(rollback).toContain('"3000" || "$PREVIOUS_PORT" == "3004"');
     expect(audit).toContain('^(3000|3004)$');
-    expect(workflow).toContain("[[ \"$ACTIVE_PORT\" == '3000' || \"$ACTIVE_PORT\" == '3004' ]]");
+    expect(workflow).toContain('[[ "$ACTIVE_PORT" == \'3000\' || "$ACTIVE_PORT" == \'3004\' ]]');
     expect(monitor).toContain('3004) echo "persiantoolbox-green"');
     expect(rehearsal).toContain('GREEN_PORT=3004');
     expect(history).toContain('"$ACTIVE_PORT" == "3004"');
+  });
+
+  it('requires liveness failure before the health monitor restarts an online production slot', () => {
+    const monitor = source('health-monitor.sh');
+    const healthSection = monitor.slice(
+      monitor.indexOf('# 2. Health endpoint'),
+      monitor.indexOf('# 3. CSS served correctly'),
+    );
+
+    expect(healthSection).toContain('/api/version');
+    expect(healthSection).toContain('"service":"persiantoolbox"');
+    expect(healthSection).toContain(
+      'Health endpoint degraded but liveness probe succeeded — suppressing restart',
+    );
+    expect(healthSection).toContain('Health and liveness probes failed — restarting PM2');
+    expect(healthSection).not.toContain('Health endpoint failed twice — restarting PM2');
+    expect(healthSection.indexOf('/api/version')).toBeLessThan(
+      healthSection.indexOf('pm2 restart "$PM2_PROCESS"'),
+    );
   });
 
   it('keeps enough PM2 memory headroom to avoid the observed production restart loop', () => {
