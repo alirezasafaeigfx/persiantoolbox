@@ -3,7 +3,7 @@
 ## هویت
 
 - Task IDs و وضعیت: PT-00 DONE، PT-01 DONE، PT-02 REVIEW، PT-03 REVIEW، PT-04 DONE، PT-05 BLOCKED، PT-06 BLOCKED.
-- Branch / base SHA / candidate SHA: `codex/pr43-homepage-ui-seo-exec` / `origin/docs/homepage-ui-seo-program-20260920`=`c201a8fbd070a978538a0d8118263eab5b8b8279` / اصلاح helper در SHA جدید این مرحله ثبت می‌شود.
+- Branch / base SHA / candidate SHA: `codex/pr43-homepage-ui-seo-exec` / `origin/docs/homepage-ui-seo-program-20260920`=`c201a8fbd070a978538a0d8118263eab5b8b8279` / کد اصلاح helper آزموده‌شده در `17bb72bfe4b5c556e2cc6c84a3f9465126da3685`؛ این گزارش در commit بعدی نگهداری شده است.
 - PR URL و base branch: stacked PR به `docs/homepage-ui-seo-program-20260920`؛ پس از push در خروجی نهایی ثبت می‌شود.
 - Production SHA مشاهده‌شده و زمان UTC: `7b743046b9f3d652ecfc2d2f2a64274550e2e21f`، مشاهده‌شده در 2026-09-20.
 - وضعیت worktree و commitهای مربوط: worktree مستقل؛ `fdba7289` یکسان‌سازی هویت SEO و `83bd1b64` اصلاح هیرو/کارت‌ها. checkout اصلی دست‌نخورده و تغییرات مالک حفظ شده‌اند.
@@ -33,6 +33,7 @@
 | Lighthouse هم‌شرایط | baseline median: Perf 77، LCP 5592.2ms، CLS 0، TBT 69، FCP 2142.2ms؛ candidate median: Perf 75، LCP 5742.14ms، CLS 0، TBT 73، FCP 2442.14ms؛ delta در budget برنامه، CLS بدون تغییر | `reports/baseline/lighthouse/` و `reports/candidate/lighthouse/` |
 | PT-04 controlled overlay reproduction | PASS؛ unknown consent overlap confirmed; accepted/rejected and dismissal states measured | `reports/overlay-diagnosis.md` |
 | CI run `35532406714` قبل از اصلاح | FAIL فقط `e2e-chromium (2)`؛ سه homepage test در `mobile-ux.spec.ts:61`; سایر shardها و quality/build/contracts موفق | [failed job](https://github.com/alirezasafaeigfx/persiantoolbox/actions/runs/35532406714/job/106135221902) |
+| CI run `35534545010` و LHCI پس از اصلاح روی SHA `17bb72b` | PASS؛ quality، build، contracts، licensing، security، smoke، هر ۴ shard E2E و LHCI موفق | [ci-core](https://github.com/alirezasafaeigfx/persiantoolbox/actions/runs/35534545010) · [lighthouse](https://github.com/alirezasafaeigfx/persiantoolbox/actions/runs/35534545066) |
 | بازتولید production محلی قبل از اصلاح | FAIL همان دو span clipping‌شده در iPhone SE/14/S21؛ screenshot و trace در `test-results/` محلی تولید شد | `tests/e2e/mobile-ux.spec.ts` |
 | بازتولید پس از اصلاح | NOT_RUN کامل؛ targeted run از assertion عبور کرد اما در همان تست موجودِ touch-target loop روی target ناپایدار `nth(8)` timeout شد؛ این failure جدید به helper نسبت داده نمی‌شود | خروجی اجرای محلی این مرحله |
 
