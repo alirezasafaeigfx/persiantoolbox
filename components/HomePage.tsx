@@ -36,6 +36,7 @@ import {
   getHomeTrustCards,
   getHomeUseCases,
   getHomeValueProofs,
+  HOME_PRIVACY_ANSWER,
 } from '@/lib/home-copy';
 import { getHomePack3FaqAnswer } from '@/lib/pricing/pricingSnippets';
 
@@ -188,8 +189,7 @@ export default async function HomePage() {
   const homeFaq = [
     {
       question: 'آیا داده‌ها به سرور ارسال می‌شوند؟',
-      answer:
-        'خیر. محاسبات، ویرایش فایل و تولید سند در مرورگر شما انجام می‌شود و فایل‌ها یا متن‌های حساس ارسال نمی‌شوند.',
+      answer: HOME_PRIVACY_ANSWER,
     },
     {
       question: 'آیا خروجی‌ها رسمی یا تضمینی هستند؟',
@@ -240,6 +240,7 @@ export default async function HomePage() {
           '@type': 'Thing',
           name: 'ابزارهای آنلاین فارسی',
         },
+        isPartOf: { '@id': `${siteUrl}/#website` },
       },
       {
         '@type': 'ItemList',
@@ -259,24 +260,6 @@ export default async function HomePage() {
           name: item.question,
           acceptedAnswer: { '@type': 'Answer', text: item.answer },
         })),
-      },
-      {
-        '@type': 'WebSite',
-        name: 'جعبه ابزار فارسی',
-        url: siteUrl,
-      },
-      {
-        '@type': 'Organization',
-        name: 'جعبه ابزار فارسی',
-        url: siteUrl,
-        logo: `${siteUrl}/logo.png`,
-        sameAs: [
-          'https://t.me/persiantoolbox',
-          'https://github.com/parsairaniiidev/persiantoolbox',
-          'https://twitter.com/persiantoolbox',
-          'https://www.linkedin.com/company/persiantoolbox',
-          'https://youtube.com/@persiantoolbox',
-        ],
       },
     ],
   };
