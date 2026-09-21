@@ -10,12 +10,18 @@
 
 ## Release authority
 
-No explicit owner approval to perform a new merge, deploy, or rollback was found in the available conversation. The current user instruction expressly prohibits those actions. Issue #47 owner updates dated 2026-09-20 and 2026-09-21 record earlier merges/deploys and repeatedly state that new approval is required; they are historical evidence, not authorization for this review. No new release action was performed.
+### Historical release approval — NOT VERIFIED
+
+For the earlier merges and deployments (including runs 35551767845 and 35562641880), no explicit owner approval after the visible deployment hold has been verified in the evidence available to this review. This does not prove that approval was never given in a separate local Codex conversation. The local executor should inspect only the relevant existing project conversation and record a short approval excerpt with its time/reference if found; otherwise retain NOT VERIFIED. Reports posted under the owner's GitHub account and successful workflow runs prove activity, not that the owner authorized it.
+
+### New release actions — NOT AUTHORIZED
+
+This review authorizes repository corrections and verification only. No new merge, staging/production deployment or rollback is authorized or performed. Do not infer permission from the historical successful release, an approval of design, or an instruction to continue review.
 
 ## UI and 200% zoom evidence
 
 - The old test name `200% zoom` was inaccurate. `deviceScaleFactor: 2` is now named and reported as **DPR 2 density**, not browser zoom.
-- The focused Playwright checks cover light and dark themes, search visibility, hero control visibility, all six task paths, keyboard order, 44px targets, control bounds, and horizontal overflow at mobile DPR 2.
+- The automated checks cover search and secondary hero-action visibility, the six task-link href values, keyboard order, 44px target heights, horizontal bounds with nonnegative vertical coordinates, and horizontal overflow at mobile DPR 2. They do not establish click-through navigation, successful search submission, absence of all overlap/clipping, or full vertical viewport containment. Below-the-fold content is allowed and requires scrolling.
 - Actual browser zoom at 200%: **NOT_RUN**. Playwright's supported API here does not set browser UI zoom; CDP page scale and device scale are different measurements. Manual Chromium/Firefox verification is required and must capture the tested SHA, theme, viewport, keyboard path, clipping/overlap result, and screenshot. No PASS is claimed for actual browser zoom.
 
 ## Timeout investigation
