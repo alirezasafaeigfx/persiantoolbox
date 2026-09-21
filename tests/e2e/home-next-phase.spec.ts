@@ -178,3 +178,47 @@ test('task routes preserve keyboard order, touch targets, and 200% zoom', async 
   );
   await context.close();
 });
+
+test('install invitation waits for either consent decision and preserves cleanup', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await context.newPage();
+  await page.clock.install();
+
+  const dispatchInstallPrompt = () =>
+    page.evaluate(() => {
+      const event = new Event('beforeinstallprompt', { cancelable: true });
+      Object.defineProperties(event, {
+        prompt: { value: () => Promise.resolve() },
+        userChoice: { value: Promise.resolve({ outcome: 'dismissed' }) },
+      });
+      window.dispatchEvent(event);
+    });
+
+  await page.goto('/');
+  await expect(page.getByRole('dialog', { name: 'cookie consent' })).toBeVisible();
+  await dispatchInstallPrompt();
+  await page.clock.fastForward(46_000);
+  await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'رد همه کوکی‌ها' }).click();
+  await expect(page.getByText('نصب اپلیکیشن')).toBeVisible();
+  await page.getByRole('button', { name: 'نه متشکرم' }).click();
+  await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
+
+  await page.evaluate(() => window.localStorage.clear());
+  await page.reload();
+  await expect(page.getByRole('dialog', { name: 'cookie consent' })).toBeVisible();
+  await dispatchInstallPrompt();
+  await page.clock.fastForward(46_000);
+  await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
+
+  await page.getByRole('button', { name: 'پذیرش همه کوکی‌ها' }).click();
+  await expect(page.getByText('نصب اپلیکیشن')).toBeVisible();
+  await page.evaluate(() => window.dispatchEvent(new Event('appinstalled')));
+  await expect(page.getByText('نصب اپلیکیشن')).toHaveCount(0);
+  expect(await page.evaluate(() => window.localStorage.getItem('pwa-install-dismissed'))).toBe('1');
+
+  await context.close();
+});

@@ -29,7 +29,16 @@ Visual evidence: `reports/next-phase/screenshots/` contains 360×800 and 390×84
 
 ## Consent/install matrix
 
-NOT_RUN. Required states: unknown, accepted, rejected, install-dismissed, `appinstalled`, storage failure and listener cleanup.
+| State | Expected behavior | Result |
+| --- | --- | --- |
+| Unknown consent after 45 seconds | Consent remains visible; install hidden while deferred event is retained | PASS |
+| Rejected consent | Rejection resolves the gate; install becomes eligible | PASS |
+| Accepted consent | Acceptance resolves the gate; install becomes eligible | PASS |
+| Existing install dismissal | Install remains hidden | PASS |
+| Manual install dismissal | Install hides and persistence remains independent of consent | PASS |
+| `appinstalled` | Install hides, deferred state clears and dismissal persists | PASS |
+| Storage read failure | Page does not crash; unresolved consent keeps install hidden | PASS |
+| Component unmount | Consent listener is removed | PASS |
 
 ## GSC/GEO
 
@@ -46,4 +55,6 @@ BLOCKED pending an authorized complete current/prior 28-day Performance export a
 | Mobile/contrast GREEN | PASS | 3/3 focused tests; task offsets reduced, light 7.58:1, dark 7.07:1, keyboard/touch/DPR2 checks pass |
 | Existing homepage E2E | PASS | 7/7 with one worker; an earlier two-worker dev run had 2 hydration-race navigation failures before passing in isolation |
 | TypeScript | PASS | `pnpm typecheck` |
+| Consent/install unit regression | PASS | 10/10 across component, analytics-consent and mount-contract suites |
+| Next-phase browser matrix | PASS | 4/4 Chromium: mobile order, contrast, keyboard/touch/DPR2 and consent/install overlay states |
 | Application gates | NOT_RUN | — |
