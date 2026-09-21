@@ -15,7 +15,11 @@ function parseRgb(value: string): Rgb {
   if (!channels || channels.length !== 3 || channels.some((channel) => Number.isNaN(channel))) {
     throw new Error(`Unsupported computed color: ${value}`);
   }
-  return { r: channels[0]!, g: channels[1]!, b: channels[2]! };
+  const [r, g, b] = channels;
+  if (r === undefined || g === undefined || b === undefined) {
+    throw new Error(`Unsupported computed color: ${value}`);
+  }
+  return { r, g, b };
 }
 
 function composite(foreground: Rgb, background: Rgb, alpha: number): Rgb {
@@ -35,8 +39,11 @@ function luminance(color: Rgb): number {
 }
 
 function contrastRatio(foreground: Rgb, background: Rgb): number {
-  const values = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
-  return (values[0]! + 0.05) / (values[1]! + 0.05);
+  const foregroundLuminance = luminance(foreground);
+  const backgroundLuminance = luminance(background);
+  const lighter = Math.max(foregroundLuminance, backgroundLuminance);
+  const darker = Math.min(foregroundLuminance, backgroundLuminance);
+  return (lighter + 0.05) / (darker + 0.05);
 }
 
 test.beforeEach(async ({ page }) => {
@@ -169,7 +176,10 @@ test('task routes preserve keyboard order, touch targets, and 200% zoom', async 
   for (const link of await taskLinks.all()) {
     const box = await link.boundingBox();
     expect(box, 'task link bounding box').not.toBeNull();
-    expect(box!.height, 'task link touch height').toBeGreaterThanOrEqual(44);
+    if (!box) {
+      throw new Error('Task link bounding box is missing');
+    }
+    expect(box.height, 'task link touch height').toBeGreaterThanOrEqual(44);
   }
 
   await expect(page.locator('#task-heading')).toBeVisible();
