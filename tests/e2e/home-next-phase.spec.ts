@@ -191,7 +191,7 @@ test('task routes preserve keyboard order, touch targets, and DPR 2 density (not
   await context.close();
 });
 
-test('homepage controls remain usable in light and dark themes at mobile DPR 2 density', async ({
+test('homepage hrefs and horizontal bounds match in both themes at DPR 2', async ({
   browser,
 }) => {
   const context = await browser.newContext({
@@ -259,7 +259,8 @@ test('homepage controls remain usable in light and dark themes at mobile DPR 2 d
         taskHrefs: taskLinks.map((link) => link.getAttribute('href')),
         taskPaths,
         hasHorizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
-        controlsWithinViewport: rects.every(
+        // Below-the-fold controls are allowed; this is not full viewport containment.
+        controlsWithinHorizontalBoundsAtNonnegativeY: rects.every(
           (rect) =>
             rect.x >= 0 && rect.right <= window.innerWidth && rect.y >= 0 && rect.bottom >= rect.y,
         ),
@@ -270,7 +271,7 @@ test('homepage controls remain usable in light and dark themes at mobile DPR 2 d
     console.log(`HOME_NEXT_PHASE_THEME_CONTROLS ${JSON.stringify({ theme, ...evidence })}`);
     expect(evidence.taskHrefs).toEqual(expectedTaskPaths);
     expect(evidence.hasHorizontalOverflow).toBe(false);
-    expect(evidence.controlsWithinViewport).toBe(true);
+    expect(evidence.controlsWithinHorizontalBoundsAtNonnegativeY).toBe(true);
     await expect(page.getByRole('combobox', { name: 'جستجوی ابزار' })).toBeVisible();
     await expect(page.locator('a[href="#popular-tools-heading"]')).toBeVisible();
   }
