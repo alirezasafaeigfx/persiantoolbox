@@ -4,8 +4,11 @@
 
 - Base: `origin/main` at `c90f175096ab7053b8d2e7119ca2aaee85bb2407`.
 - Branch: `feat/home-next-phase-20260920` in an isolated worktree.
+- Verified implementation head before this evidence-only commit: `70d47cea38eeb81c7d4de349787c9e465f3c05a1`.
 - Owner-approved design: `docs/superpowers/specs/2026-09-20-home-next-phase-design.md`.
 - Implementation plan: `docs/superpowers/plans/2026-09-20-home-next-phase.md`.
+- Scope: 18 tracked paths (homepage/CSS, consent-aware install prompt, cross-platform test support, browser/unit coverage, design/plan/report and five screenshots).
+- Remote truth at finalization: `origin/main` is still the base SHA above; documentation PR #48 remains open and green, so its overlapping task board was not edited.
 - MERGED: no.
 - DEPLOYED: no; staging and production remain prohibited without separate explicit approval.
 
@@ -42,7 +45,14 @@ Visual evidence: `reports/next-phase/screenshots/` contains 360×800 and 390×84
 
 ## GSC/GEO
 
-BLOCKED pending an authorized complete current/prior 28-day Performance export and Page indexing reasons. Raw exports and private queries will not be committed.
+BLOCKED after a sanitized local access audit:
+
+- `GOOGLE_APPLICATION_CREDENTIALS`, `GSC_SITE_URL` and `GOOGLE_SERVICE_ACCOUNT_FILE` are not set in the process or owner-checkout environment files.
+- Only the non-secret example property `GOOGLE_SEARCH_CONSOLE_SITE_URL` exists in `.env.example` files.
+- The documented local credential path does not exist and no candidate Performance/Page-indexing export exists in the workspace.
+- Smallest next action: provide an authorized read-only credential path or exports for the latest complete 28 days and preceding 28 days, including property, dates, search type, filters, pages, queries, country/device and Page indexing reasons.
+
+No raw export, private query, credential value, or fabricated metric was read or committed.
 
 ## Verification log
 
@@ -56,5 +66,13 @@ BLOCKED pending an authorized complete current/prior 28-day Performance export a
 | Existing homepage E2E | PASS | 7/7 with one worker; an earlier two-worker dev run had 2 hydration-race navigation failures before passing in isolation |
 | TypeScript | PASS | `pnpm typecheck` |
 | Consent/install unit regression | PASS | 10/10 across component, analytics-consent and mount-contract suites |
-| Next-phase browser matrix | PASS | 4/4 Chromium: mobile order, contrast, keyboard/touch/DPR2 and consent/install overlay states |
-| Application gates | NOT_RUN | — |
+| Windows SQLite cleanup regression | PASS | RED reproduced as `EPERM`; GREEN 2/2 after explicit test-only connection cleanup |
+| Hydration/cold-compile E2E regressions | PASS | RED reproduced for four legacy interactions; GREEN 4/4 after readiness and cold-compile waits |
+| Final Chromium matrix | PASS | 32/32 with one worker across next-phase, homepage and three mobile viewports |
+| `pnpm ci:quick` | PASS | 225 files, 1759 tests, lint, typecheck and local-first gate |
+| `pnpm ci:contracts` | PASS | release/PWA/links/docs/licensing contracts; feature audit reported expected missing local optional env warnings |
+| `pnpm build` | PASS | 656 static pages; four pre-existing dynamic-filesystem tracing warnings in `app/api/admin/ops/logs/route.ts` |
+| Standalone smoke | PASS | 11/11 route checks on `127.0.0.1:3100` |
+| Formatting/diff/licensing | PASS | relevant files formatted; `git diff --check`; 8 license assets and 3 consistency assertions |
+
+All six branch commits preceding this evidence-only commit contain a `Signed-off-by` trailer. No workflow dispatch, merge, staging mutation or production deployment was performed.
