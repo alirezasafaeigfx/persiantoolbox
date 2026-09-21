@@ -30,6 +30,30 @@
 - `docs/growth/homepage-ui-seo-2026-09/reports/next-phase-candidate.md`: records before/after measurements, screenshots, checks, exact SHAs, GSC evidence state, and release boundaries.
 - `docs/growth/homepage-ui-seo-2026-09/reports/next-phase/screenshots/`: stores the four approved mobile theme screenshots and the 200% zoom screenshot.
 
+### Task 0: Make the existing Playwright server command cross-platform
+
+**Files:**
+
+- Modify: `playwright.config.ts`
+- Create: `tests/unit/playwright-config.test.ts`
+
+**Interfaces:**
+
+- Consumes: Playwright 1.63 `webServer.env` support.
+- Produces: the same development server variables without POSIX-only inline assignment syntax.
+
+- [ ] **Step 1: Write and run a failing config contract**
+
+Import the Playwright config, assert the development server command does not begin with inline environment assignments, and assert `webServer.env` contains the test allowlist and analytics ID. Run the focused Vitest file and expect failure on the current POSIX-prefixed command.
+
+- [ ] **Step 2: Move test variables to `webServer.env`**
+
+Keep the Next.js command unchanged apart from removing the inline assignments. Add `env` only for the development server, preserving `process.env` plus the two test values.
+
+- [ ] **Step 3: Verify the contract and a real Playwright startup**
+
+Run the focused Vitest contract and then the mobile RED test. The contract must pass and Playwright must reach the actual assertion rather than fail during server startup. Commit this prerequisite with the next GREEN task so the branch is never intentionally red.
+
 ### Task 1: Establish mobile and contrast RED evidence
 
 **Files:**
