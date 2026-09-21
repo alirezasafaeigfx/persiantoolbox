@@ -144,7 +144,9 @@ test('search placeholder contrast meets WCAG AA in light and dark themes', async
   }
 });
 
-test('task routes preserve keyboard order, touch targets, and 200% zoom', async ({ browser }) => {
+test('task routes preserve keyboard order, touch targets, and DPR 2 density (not browser zoom)', async ({
+  browser,
+}) => {
   const context = await browser.newContext({
     viewport: { width: 360, height: 800 },
     deviceScaleFactor: 2,
@@ -186,6 +188,93 @@ test('task routes preserve keyboard order, touch targets, and 200% zoom', async 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
     true,
   );
+  await context.close();
+});
+
+test('homepage controls remain usable in light and dark themes at mobile DPR 2 density', async ({
+  browser,
+}) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 2,
+  });
+  await context.addInitScript(() => {
+    window.localStorage.setItem(
+      'pt-consent',
+      JSON.stringify({
+        ad_storage: false,
+        ad_user_data: false,
+        ad_personalization: false,
+        analytics_storage: false,
+        version: 'v2',
+      }),
+    );
+  });
+  const page = await context.newPage();
+  await page.goto('/');
+
+  const expectedTaskPaths = [
+    '/pdf-tools/compress/compress-pdf',
+    '/salary',
+    '/date-tools/shamsi-gregorian',
+    '/writing-tools/persian-writing-studio',
+    '/business-tools/document-studio?type=invoice',
+    '/image-tools',
+  ];
+
+  for (const theme of ['light', 'dark'] as const) {
+    await page.evaluate((nextTheme) => {
+      document.documentElement.classList.toggle('dark', nextTheme === 'dark');
+      window.localStorage.setItem('theme', nextTheme);
+    }, theme);
+
+    const evidence = await page.evaluate((taskPaths) => {
+      const taskLinks = [
+        ...document.querySelectorAll<HTMLAnchorElement>(
+          'section[aria-labelledby="task-heading"] a',
+        ),
+      ];
+      const input = document.querySelector<HTMLInputElement>('input[aria-label="جستجوی ابزار"]');
+      const controls = [
+        input,
+        ...[
+          ...document.querySelectorAll<HTMLAnchorElement>(
+            'section[aria-labelledby="task-heading"] a',
+          ),
+        ],
+        ...[...document.querySelectorAll<HTMLAnchorElement>('a[href="#popular-tools-heading"]')],
+      ].filter((element): element is HTMLAnchorElement | HTMLInputElement => element !== null);
+      const rects = controls.map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          tag: element.tagName,
+          href: element.getAttribute('href'),
+          x: rect.x,
+          y: rect.y,
+          right: rect.right,
+          bottom: rect.bottom,
+        };
+      });
+      return {
+        taskHrefs: taskLinks.map((link) => link.getAttribute('href')),
+        taskPaths,
+        hasHorizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
+        controlsWithinViewport: rects.every(
+          (rect) =>
+            rect.x >= 0 && rect.right <= window.innerWidth && rect.y >= 0 && rect.bottom >= rect.y,
+        ),
+        controlRects: rects,
+      };
+    }, expectedTaskPaths);
+
+    console.log(`HOME_NEXT_PHASE_THEME_CONTROLS ${JSON.stringify({ theme, ...evidence })}`);
+    expect(evidence.taskHrefs).toEqual(expectedTaskPaths);
+    expect(evidence.hasHorizontalOverflow).toBe(false);
+    expect(evidence.controlsWithinViewport).toBe(true);
+    await expect(page.getByRole('combobox', { name: 'جستجوی ابزار' })).toBeVisible();
+    await expect(page.locator('a[href="#popular-tools-heading"]')).toBeVisible();
+  }
+
   await context.close();
 });
 
