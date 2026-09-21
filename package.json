@@ -209,7 +209,7 @@
     "playwright-core": "1.63.0",
     "postcss": "^8.5.23",
     "prettier": "^3.8.4",
-    "semantic-release": "^23.0.8",
+    "semantic-release": "^25.0.9",
     "sharp": "^0.35.4",
     "storybook": "8.6.18",
     "tailwindcss": "^4.3.3",
