@@ -20,7 +20,7 @@ overrides:
   fast-uri: 3.1.6
   sharp: 0.35.4
   eslint: 8.57.1
-  eslint-config-next: 15.5.25
+  eslint-config-next: 15.5.26
   brace-expansion@1.1.15: 1.1.16
   brace-expansion@2.1.1: 2.1.2
   brace-expansion@5.0.6: 5.0.9
@@ -230,8 +230,8 @@ importers:
         specifier: 8.57.1
         version: 8.57.1
       eslint-config-next:
-        specifier: 15.5.25
-        version: 15.5.25(eslint@8.57.1)(typescript@5.5.4)
+        specifier: 15.5.26
+        version: 15.5.26(eslint@8.57.1)(typescript@5.5.4)
       eslint-import-resolver-typescript:
         specifier: ^4.4.5
         version: 4.4.5(eslint-plugin-import@2.32.0)(eslint@8.57.1)
@@ -248,8 +248,8 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(eslint@8.57.1)
       eslint-plugin-react-refresh:
-        specifier: ^0.5.6
-        version: 0.5.6(eslint@8.57.1)
+        specifier: ^0.5.7
+        version: 0.5.7(eslint@8.57.1)
       globals:
         specifier: ^17.7.0
         version: 17.7.0
@@ -1897,8 +1897,8 @@ packages:
   '@next/env@16.3.5':
     resolution: {integrity: sha512-NWEXVDMqoEo0ktmU6u0sE2Vg0LOcsD7NnOTJNo3/fEaTfsg+F1bMIxuDmQbda4e3yTIQwVdUREF2yIuMOusKtg==}
 
-  '@next/eslint-plugin-next@15.5.25':
-    resolution: {integrity: sha512-dAzOqZQCAOgIq5yQpsuMBZcwxK0AtzGqHMQpxNWYLQlvf79rsP3SDwdGPNQC4ySaMSihOQXMO/VXubQ3JWW+3A==}
+  '@next/eslint-plugin-next@15.5.26':
+    resolution: {integrity: sha512-xeVpG8CbnTf9IelaFbZQ7TN4BXHV2x+ejnXXbY7Z4kD+sgJ8j97psraV+4/fGjLCjNQuEofUHMeIeieDMyKO/w==}
 
   '@next/swc-darwin-arm64@16.3.5':
     resolution: {integrity: sha512-pMmGgETfKvElucLHtVaeiMRbp2zUbvKx7b1yGko0liBz3cw1mKSggWN/Rp/wPz8z+E1O82u3r4L1Co+ZS5hokQ==}
@@ -3066,8 +3066,8 @@ packages:
   '@types/node@25.9.3':
     resolution: {integrity: sha512-603BddQMv3pUcr4U2dhujk83N2tTDVr/34wII2B6bJy6g+8WD6yUb11jszNs0gdi4PesVWl7ABt8nYMVpnLUcg==}
 
-  '@types/node@25.9.7':
-    resolution: {integrity: sha512-Y+axoNWOFLvDNFxNbDA+kqqV05imHwTu5bZWWO6tQM3Y2NX1jvzUJkYlf4nYnMCnvu4wQBKW6Nr+ok6yHWA9aQ==}
+  '@types/node@25.9.8':
+    resolution: {integrity: sha512-VfMrScDmMhUJQmd5hArdQnFvK0OIeD36uN2Va1FcpYaLB/BgkgM8Ulc50XtYISPMz7APJ30+N0T5EM0jlcdfRw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -4495,8 +4495,8 @@ packages:
     resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
     engines: {node: '>=12'}
 
-  eslint-config-next@15.5.25:
-    resolution: {integrity: sha512-hB1oClZzRO3vMAeMmBMch0FHNJ4irH74LvQWDEMHkJtG/Us9+SAsg1f5Pvcw9jz4tc8wSGnvbmF050BRAAIbBg==}
+  eslint-config-next@15.5.26:
+    resolution: {integrity: sha512-nekKvDmRQV8VRUhBTt2B/HFdgNR0vWKA/ao5W1L7lcaEvAXsuQYjIJqwLUGaux9uvXOrxnxLu5dQjnRnOixcfw==}
     peerDependencies:
       eslint: 8.57.1
       typescript: '>=3.3.1'
@@ -4585,8 +4585,8 @@ packages:
     peerDependencies:
       eslint: 8.57.1
 
-  eslint-plugin-react-refresh@0.5.6:
-    resolution: {integrity: sha512-uZnh24On2bk478AkaDAKcpRiYhS3qFSaSNvpXxV6/Ek/BBDICkWGG7MnBSfjnIlCVBei5vsLlIeQYxbF22+Udg==}
+  eslint-plugin-react-refresh@0.5.7:
+    resolution: {integrity: sha512-XhJSzLljuYD4UjNuFGJu2v7aD3sqNVK12w5/DCUfrNfHWegZo2+TsavNx8MuxMwEquuFAzNbNfXKU0WoZ+YUIg==}
     peerDependencies:
       eslint: 8.57.1
 
@@ -10129,7 +10129,7 @@ snapshots:
 
   '@next/env@16.3.5': {}
 
-  '@next/eslint-plugin-next@15.5.25':
+  '@next/eslint-plugin-next@15.5.26':
     dependencies:
       fast-glob: 3.3.1
 
@@ -11459,7 +11459,7 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
-  '@types/node@25.9.7':
+  '@types/node@25.9.8':
     dependencies:
       undici-types: 7.24.6
 
@@ -13174,9 +13174,9 @@ snapshots:
 
   escape-string-regexp@5.0.0: {}
 
-  eslint-config-next@15.5.25(eslint@8.57.1)(typescript@5.5.4):
+  eslint-config-next@15.5.26(eslint@8.57.1)(typescript@5.5.4):
     dependencies:
-      '@next/eslint-plugin-next': 15.5.25
+      '@next/eslint-plugin-next': 15.5.26
       '@rushstack/eslint-patch': 1.16.1
       '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.4))(eslint@8.57.1)(typescript@5.5.4)
       '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.5.4)
@@ -13342,7 +13342,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
 
-  eslint-plugin-react-refresh@0.5.6(eslint@8.57.1):
+  eslint-plugin-react-refresh@0.5.7(eslint@8.57.1):
     dependencies:
       eslint: 8.57.1
 
@@ -15981,7 +15981,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.2
-      '@types/node': 25.9.7
+      '@types/node': 25.9.8
       long: 5.3.2
 
   proxy-addr@2.0.7:
